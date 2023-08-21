@@ -1,28 +1,19 @@
 openapi: 3.0.3
 info:
   title: Onboarding - OpenAPI 3.0
-  
-  termsOfService: http://swagger.io/terms/
-  contact:
-    email: apiteam@swagger.io
+  version: 1.0.11
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.11
-externalDocs:
-  description: Find out more about Swagger
-  url: http://swagger.io
 servers:
   - url: https://STD22037.com
 
 paths:
   /students:
-    get:
+     get:
       tags:
         - students
-      summary: Finds Pets by status
       description: Multiple status values can be provided with comma separated strings
-      operationId: findPetsByStatus
       parameters:
         - name: status
           in: query
@@ -46,4 +37,135 @@ paths:
                 name: Riantsoa
                 birthdate: '1999-11-11'
 
-  
+
+  /teachers:
+    get:
+      tags:
+        - teachers
+      description: Multiple status values can be provided with comma separated strings
+      parameters:
+        - name: status
+          in: query
+          description: Status values that need to be considered for filter
+          required: false
+          explode: true
+          schema:
+            type: string
+            default: available
+            enum:
+              - available
+              - pending
+              - sold
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              example:
+                id: 1
+                firstname: Toky Mahery
+                lastName: Ramarozaka
+                subject:
+                  - id: 1
+                    name: Algorithmique
+                    code_du_cours: PROG1
+                    duree_du_cours: 20h
+                  - id: 2
+                    name: SGBD
+                    code_du_cours: DONNEE1
+                    duree_du_cours: 20h
+
+
+    put:
+      tags:
+        - teachers
+      summary: Update an existing teacher
+      description: Update an existing teacher by Id
+      operationId: updateteacher
+      requestBody:
+        description: Update an existent pet in the store
+        content:
+          application/json:
+            example:
+              id: 1
+              firstname: Toky Mahery
+              lastName: Ramarozaka
+              subject:
+                - id: 1
+                  name: Algorithmique
+                  code_du_cours: PROG1
+                  duree_du_cours: 20h
+                - id: 2
+                  name: SGBD
+                  code_du_cours: DONNEE1
+                  duree_du_cours: 20h
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Teacher not found
+        '405':
+          description: Validation exception
+          
+  /teachers/{teacherId}:
+    delete:
+      tags:
+        - teachers
+      summary: Delete teacher
+      parameters:
+        - name: teacherId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the teacher to remove
+      responses:
+        '204':
+          description: Teacher deleted successfully
+        '404':
+          description: Teacher not found
+    post:
+      tags:
+        - teachers
+      summary: Créer un nouvel enseignant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: ID de l'enseignant
+                firstname:
+                  type: string
+                  description: Prénom de l'enseignant
+                lastName:
+                  type: string
+                  description: Nom de l'enseignant
+                subject:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: ID du cours
+                      name:
+                        type: string
+                        description: Nom du cours
+                      code_du_cours:
+                        type: string
+                        description: Code du cours
+                      duree_du_cours:
+                        type: string
+                        description: Durée du cours
+      responses:
+        '201':
+          description: Enseignant créé avec succès
+        '400':
+          description: Requête incorrecte
+
